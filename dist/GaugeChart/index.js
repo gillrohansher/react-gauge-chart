@@ -36,7 +36,7 @@ var defaultStyle = {
   width: "100%"
 }; // Props that should cause an animation on update
 
-var animateNeedleProps = ["marginInPercent", "arcPadding", "percent", "nrOfLevels", "animDelay"];
+var animateNeedleProps = ["marginInPercent", "arcPadding", "percent", "percent2", "nrOfLevels", "animDelay"];
 
 var GaugeChart = function GaugeChart(props) {
   var svg = (0, _react.useRef)({});
@@ -45,6 +45,7 @@ var GaugeChart = function GaugeChart(props) {
   var height = (0, _react.useRef)({});
   var doughnut = (0, _react.useRef)({});
   var needle = (0, _react.useRef)({});
+  var needle2 = (0, _react.useRef)({});
   var outerRadius = (0, _react.useRef)({});
   var margin = (0, _react.useRef)({}); // = {top: 20, right: 50, bottom: 50, left: 50},
 
@@ -61,7 +62,7 @@ var GaugeChart = function GaugeChart(props) {
     var prevProps = arguments.length > 2 ? arguments[2] : undefined;
 
     if (update) {
-      renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, pieChart, svg, props, container, arcData);
+      renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData);
       return;
     }
 
@@ -78,7 +79,8 @@ var GaugeChart = function GaugeChart(props) {
     .startAngle(startAngle).endAngle(endAngle).sort(null); //Add the needle element
 
     needle.current = g.current.append("g").attr("class", "needle");
-    renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, pieChart, svg, props, container, arcData);
+    needle2.current = g.current.append("g").attr("class", "needle2");
+    renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData);
   }, [props]);
   (0, _react.useLayoutEffect)(function () {
     setArcData(props, nbArcsToDisplay, colorArray, arcData);
@@ -102,11 +104,11 @@ var GaugeChart = function GaugeChart(props) {
     });
     initChart(true, resize, prevProps.current);
     prevProps.current = props;
-  }, [props.nrOfLevels, props.arcsLength, props.colors, props.percent, props.needleColor, props.needleBaseColor]);
+  }, [props.nrOfLevels, props.arcsLength, props.colors, props.percent, props.percent2, props.needleColor, props.needleBaseColor, props.needle2Color, props.needle2BaseColor]);
   (0, _react.useEffect)(function () {
     var handleResize = function handleResize() {
       var resize = true;
-      renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, pieChart, svg, props, container, arcData);
+      renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData);
     }; //Set up resize event listener to re-render the chart everytime the window is resized
 
 
@@ -136,6 +138,7 @@ GaugeChart.defaultProps = {
   cornerRadius: 6,
   nrOfLevels: 3,
   percent: 0.4,
+  percent2: 0.2,
   arcPadding: 0.05,
   //The padding between arcs, in rad
   arcWidth: 0.2,
@@ -145,6 +148,8 @@ GaugeChart.defaultProps = {
   textColor: "#fff",
   needleColor: "#464A4F",
   needleBaseColor: "#464A4F",
+  needle2Color: "#464A4F",
+  needle2BaseColor: "#464A4F",
   hideText: false,
   animate: true,
   animDelay: 500,
@@ -160,6 +165,7 @@ GaugeChart.propTypes = {
   cornerRadius: _propTypes.default.number,
   nrOfLevels: _propTypes.default.number,
   percent: _propTypes.default.number,
+  percent2: _propTypes.default.number,
   arcPadding: _propTypes.default.number,
   arcWidth: _propTypes.default.number,
   arcsLength: _propTypes.default.array,
@@ -167,6 +173,8 @@ GaugeChart.propTypes = {
   textColor: _propTypes.default.string,
   needleColor: _propTypes.default.string,
   needleBaseColor: _propTypes.default.string,
+  needle2Color: _propTypes.default.string,
+  needle2BaseColor: _propTypes.default.string,
   hideText: _propTypes.default.bool,
   animate: _propTypes.default.bool,
   formatTextValue: _propTypes.default.func,
@@ -201,7 +209,7 @@ var setArcData = function setArcData(props, nbArcsToDisplay, colorArray, arcData
 }; //Renders the chart, should be called every time the window is resized
 
 
-var renderChart = function renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, pieChart, svg, props, container, arcData) {
+var renderChart = function renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData) {
   updateDimensions(props, container, margin, width, height); //Set dimensions of svg element and translations
 
   svg.current.attr("width", width.current + margin.current.left + margin.current.right).attr("height", height.current + margin.current.top + margin.current.bottom);
@@ -215,15 +223,17 @@ var renderChart = function renderChart(resize, prevProps, width, margin, height,
 
   doughnut.current.selectAll(".arc").remove();
   needle.current.selectAll("*").remove();
+  needle2.current.selectAll("*").remove();
   g.current.selectAll(".text-group").remove(); //Draw the arc
 
   var arcPaths = doughnut.current.selectAll(".arc").data(pieChart.current(arcData.current)).enter().append("g").attr("class", "arc");
   arcPaths.append("path").attr("d", arcChart.current).style("fill", function (d) {
     return d.data.color;
   });
-  drawNeedle(resize, prevProps, props, width, needle, container, outerRadius, g); //Translate the needle starting point to the middle of the arc
+  drawNeedle(resize, prevProps, props, width, needle, needle2, container, outerRadius, g); //Translate the needle starting point to the middle of the arc
 
   needle.current.attr("transform", "translate(" + outerRadius.current + ", " + outerRadius.current + ")");
+  needle2.current.attr("transform", "translate(" + outerRadius.current + ", " + outerRadius.current + ")");
 }; //Depending on the number of levels in the chart
 //This function returns the same number of colors
 
@@ -242,25 +252,36 @@ var getColors = function getColors(props, nbArcsToDisplay) {
 }; //If 'resize' is true then the animation does not play
 
 
-var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, container, outerRadius, g) {
+var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, needle2, container, outerRadius, g) {
   var percent = props.percent,
+      percent2 = props.percent2,
       needleColor = props.needleColor,
       needleBaseColor = props.needleBaseColor,
+      needle2Color = props.needle2Color,
+      needle2BaseColor = props.needle2BaseColor,
       hideText = props.hideText,
       animate = props.animate;
   var needleRadius = 15 * (width.current / 500),
       // Make the needle radius responsive
-  centerPoint = [0, -needleRadius / 2]; //Draw the triangle
+  centerPoint = [0, -needleRadius / 2];
+  var needle2Radius = 15 * (width.current / 500),
+      // Make the needle radius responsive
+  centerPoint = [0, -needle2Radius / 2]; //Draw the triangle
   //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
 
   var prevPercent = prevProps ? prevProps.percent : 0;
+  var prevPercent2 = prevProps ? prevProps.percent2 : 0;
   var pathStr = calculateRotation(prevPercent || percent, outerRadius, width);
-  needle.current.append("path").attr("d", pathStr).attr("fill", needleColor); //Add a circle at the bottom of needle
+  var pathStr2 = calculateRotation(prevPercent2 || percent2, outerRadius, width);
+  needle.current.append("path").attr("d", pathStr).attr("fill", needleColor);
+  needle2.current.append("path").attr("d", pathStr2).attr("fill", needleColor); //Add a circle at the bottom of needle
 
   needle.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needleRadius).attr("fill", needleBaseColor);
+  needle2.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needle2Radius).attr("fill", needle2BaseColor);
 
   if (!hideText) {
     addText(percent, props, outerRadius, width, g);
+    addText(percent2, props, outerRadius, width, g);
   } //Rotate the needle
 
 
@@ -272,8 +293,16 @@ var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, co
         return container.current.select(".needle path").attr("d", calculateRotation(progress, outerRadius, width));
       };
     });
+    needle2.current.transition().delay(props.animDelay).ease(_d.easeElastic).duration(props.animateDuration).tween("progress", function () {
+      var currentPercent = (0, _d.interpolateNumber)(prevPercent2, percent2);
+      return function (percentOfPercent) {
+        var progress = currentPercent(percentOfPercent);
+        return container.current.select(".needle2 path").attr("d", calculateRotation(progress, outerRadius, width));
+      };
+    });
   } else {
     container.current.select(".needle path").attr("d", calculateRotation(percent, outerRadius, width));
+    container.current.select(".needle2 path").attr("d", calculateRotation(percent2, outerRadius, width));
   }
 };
 
