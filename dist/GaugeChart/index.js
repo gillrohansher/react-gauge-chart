@@ -274,7 +274,7 @@ var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, ne
   var pathStr = calculateRotation(prevPercent || percent, outerRadius, width);
   var pathStr2 = calculateRotation(prevPercent2 || percent2, outerRadius, width);
   needle.current.append("path").attr("d", pathStr).attr("fill", needleColor);
-  needle2.current.append("path").attr("d", pathStr).attr("fill", needle2Color); //Add a circle at the bottom of needle
+  needle2.current.append("path").attr("d", pathStr2).attr("fill", needle2Color); //Add a circle at the bottom of needle
 
   needle.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needleRadius).attr("fill", needleBaseColor);
   needle2.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needle2Radius).attr("fill", needle2BaseColor);
