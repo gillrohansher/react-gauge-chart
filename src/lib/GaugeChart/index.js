@@ -403,7 +403,7 @@ const drawNeedle = (
   var pathStr = calculateRotation(prevPercent || percent, outerRadius, width);
   var pathStr2 = calculateRotation(prevPercent2 || percent2, outerRadius, width);
   needle.current.append("path").attr("d", pathStr).attr("fill", needleColor);
-  needle2.current.append("path").attr("d", pathStr2).attr("fill", needle2Color);
+  needle2.current.append("path2").attr("d", pathStr2).attr("fill", needle2Color);
   //Add a circle at the bottom of needle
   needle.current
     .append("circle")
@@ -447,7 +447,7 @@ const drawNeedle = (
       return function (percentOfPercent) {
         const progress = currentPercent(percentOfPercent);
         return container.current
-          .select(`.needle2 path`)
+          .select(`.needle2 path2`)
           .attr("d", calculateRotation(progress, outerRadius, width));
       };
     });
@@ -456,7 +456,7 @@ const drawNeedle = (
       .select(`.needle path`)
       .attr("d", calculateRotation(percent, outerRadius, width));
     container.current
-    .select(`.needle2 path`)
+    .select(`.needle2 path2`)
     .attr("d", calculateRotation(percent2, outerRadius, width));
   }
 };
