@@ -403,7 +403,7 @@ const drawNeedle = (
   var pathStr = calculateRotation(prevPercent || percent, outerRadius, width);
   var pathStr2 = calculateRotation(prevPercent2 || percent2, outerRadius, width);
   needle.current.append("path").attr("d", pathStr).attr("fill", needleColor);
-  needle2.current.append("path").attr("d", pathStr2).attr("fill", needleColor);
+  needle2.current.append("path").attr("d", pathStr2).attr("fill", needle2Color);
   //Add a circle at the bottom of needle
   needle.current
     .append("circle")
