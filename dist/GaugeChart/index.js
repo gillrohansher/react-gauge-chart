@@ -219,8 +219,7 @@ var renderChart = function renderChart(resize, prevProps, width, margin, height,
   calculateRadius(width, height, outerRadius, margin, g);
   doughnut.current.attr("transform", "translate(" + outerRadius.current + ", " + outerRadius.current + ")"); //Setup the arc
 
-  arcChart.current.outerRadius(100) //outerRadius.current
-  .innerRadius(outerRadius.current * (1 - props.arcWidth)).cornerRadius(props.cornerRadius).padAngle(props.arcPadding); //Remove the old stuff
+  arcChart.current.outerRadius(outerRadius.current).innerRadius(outerRadius.current * (1 - props.arcWidth)).cornerRadius(props.cornerRadius).padAngle(props.arcPadding); //Remove the old stuff
 
   doughnut.current.selectAll(".arc").remove();
   needle.current.selectAll("*").remove();
