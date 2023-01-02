@@ -33,6 +33,7 @@ const animateNeedleProps = [
   "marginInPercent",
   "arcPadding",
   "percent",
+  "percent2",
   "nrOfLevels",
   "animDelay",
 ];
@@ -44,6 +45,7 @@ const GaugeChart = (props) => {
   const height = useRef({});
   const doughnut = useRef({});
   const needle = useRef({});
+  const needle2 = useRef({});
   const outerRadius = useRef({});
   const margin = useRef({}); // = {top: 20, right: 50, bottom: 50, left: 50},
   const container = useRef({});
@@ -69,6 +71,7 @@ const GaugeChart = (props) => {
           doughnut,
           arcChart,
           needle,
+          needle2,
           pieChart,
           svg,
           props,
@@ -95,6 +98,7 @@ const GaugeChart = (props) => {
         .sort(null);
       //Add the needle element
       needle.current = g.current.append("g").attr("class", "needle");
+      needle2.current = g.current.append("g").attr("class", "needle2");
 
       renderChart(
         resize,
@@ -107,6 +111,7 @@ const GaugeChart = (props) => {
         doughnut,
         arcChart,
         needle,
+        needle2,
         pieChart,
         svg,
         props,
@@ -144,8 +149,11 @@ const GaugeChart = (props) => {
     props.arcsLength,
     props.colors,
     props.percent,
+    props.percent2,
     props.needleColor,
     props.needleBaseColor,
+    props.needle2Color,
+    props.needle2BaseColor,
   ]);
 
   useEffect(() => {
@@ -163,6 +171,7 @@ const GaugeChart = (props) => {
         doughnut,
         arcChart,
         needle,
+        needle2,
         pieChart,
         svg,
         props,
@@ -196,12 +205,15 @@ GaugeChart.defaultProps = {
   cornerRadius: 6,
   nrOfLevels: 3,
   percent: 0.4,
+  percent2: 0.2,
   arcPadding: 0.05, //The padding between arcs, in rad
   arcWidth: 0.2, //The width of the arc given in percent of the radius
   colors: ["#00FF00", "#FF0000"], //Default defined colors
   textColor: "#fff",
   needleColor: "#464A4F",
   needleBaseColor: "#464A4F",
+  needle2Color: "#464A4F",
+  needle2BaseColor: "#464A4F",
   hideText: false,
   animate: true,
   animDelay: 500,
@@ -218,6 +230,7 @@ GaugeChart.propTypes = {
   cornerRadius: PropTypes.number,
   nrOfLevels: PropTypes.number,
   percent: PropTypes.number,
+  percent2: PropTypes.number,
   arcPadding: PropTypes.number,
   arcWidth: PropTypes.number,
   arcsLength: PropTypes.array,
@@ -225,6 +238,8 @@ GaugeChart.propTypes = {
   textColor: PropTypes.string,
   needleColor: PropTypes.string,
   needleBaseColor: PropTypes.string,
+  needle2Color: PropTypes.string,
+  needle2BaseColor: PropTypes.string,
   hideText: PropTypes.bool,
   animate: PropTypes.bool,
   formatTextValue: PropTypes.func,
@@ -275,6 +290,7 @@ const renderChart = (
   doughnut,
   arcChart,
   needle,
+  needle2,
   pieChart,
   svg,
   props,
@@ -309,6 +325,7 @@ const renderChart = (
   //Remove the old stuff
   doughnut.current.selectAll(".arc").remove();
   needle.current.selectAll("*").remove();
+  needle2.current.selectAll("*").remove();
   g.current.selectAll(".text-group").remove();
   //Draw the arc
   var arcPaths = doughnut.current
@@ -330,12 +347,17 @@ const renderChart = (
     props,
     width,
     needle,
+    needle2,
     container,
     outerRadius,
     g
   );
   //Translate the needle starting point to the middle of the arc
   needle.current.attr(
+    "transform",
+    "translate(" + outerRadius.current + ", " + outerRadius.current + ")"
+  );
+  needle2.current.attr(
     "transform",
     "translate(" + outerRadius.current + ", " + outerRadius.current + ")"
   );
@@ -363,18 +385,25 @@ const drawNeedle = (
   props,
   width,
   needle,
+  needle2,
   container,
   outerRadius,
   g
 ) => {
-  const { percent, needleColor, needleBaseColor, hideText, animate } = props;
+  const { percent, percent2, needleColor, needleBaseColor, needle2Color, needle2BaseColor, hideText, animate } = props;
   var needleRadius = 15 * (width.current / 500), // Make the needle radius responsive
-    centerPoint = [0, -needleRadius / 2];
+  centerPoint = [0, -needleRadius / 2];
+
+  var needle2Radius = 15 * (width.current / 500), // Make the needle radius responsive
+  centerPoint = [0, -needle2Radius / 2];
   //Draw the triangle
   //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
   const prevPercent = prevProps ? prevProps.percent : 0;
+  const prevPercent2 = prevProps ? prevProps.percent2 : 0;
   var pathStr = calculateRotation(prevPercent || percent, outerRadius, width);
+  var pathStr2 = calculateRotation(prevPercent2 || percent2, outerRadius, width);
   needle.current.append("path").attr("d", pathStr).attr("fill", needleColor);
+  needle2.current.append("path").attr("d", pathStr2).attr("fill", needleColor);
   //Add a circle at the bottom of needle
   needle.current
     .append("circle")
@@ -382,8 +411,15 @@ const drawNeedle = (
     .attr("cy", centerPoint[1])
     .attr("r", needleRadius)
     .attr("fill", needleBaseColor);
+  needle2.current
+  .append("circle")
+  .attr("cx", centerPoint[0])
+  .attr("cy", centerPoint[1])
+  .attr("r", needle2Radius)
+  .attr("fill", needle2BaseColor);
   if (!hideText) {
     addText(percent, props, outerRadius, width, g);
+    addText(percent2, props, outerRadius, width, g);
   }
   //Rotate the needle
   if (!resize && animate) {
@@ -401,10 +437,27 @@ const drawNeedle = (
             .attr("d", calculateRotation(progress, outerRadius, width));
         };
       });
+    needle2.current
+    .transition()
+    .delay(props.animDelay)
+    .ease(easeElastic)
+    .duration(props.animateDuration)
+    .tween("progress", function () {
+      const currentPercent = interpolateNumber(prevPercent2, percent2);
+      return function (percentOfPercent) {
+        const progress = currentPercent(percentOfPercent);
+        return container.current
+          .select(`.needle2 path`)
+          .attr("d", calculateRotation(progress, outerRadius, width));
+      };
+    });
   } else {
     container.current
       .select(`.needle path`)
       .attr("d", calculateRotation(percent, outerRadius, width));
+    container.current
+    .select(`.needle2 path`)
+    .attr("d", calculateRotation(percent2, outerRadius, width));
   }
 };
 
