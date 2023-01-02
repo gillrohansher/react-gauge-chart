@@ -318,7 +318,7 @@ const renderChart = (
   );
   //Setup the arc
   arcChart.current
-    .outerRadius(outerRadius.current)
+    .outerRadius(100)//outerRadius.current
     .innerRadius(outerRadius.current * (1 - props.arcWidth))
     .cornerRadius(props.cornerRadius)
     .padAngle(props.arcPadding);
