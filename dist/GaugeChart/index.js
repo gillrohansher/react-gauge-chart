@@ -274,7 +274,7 @@ var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, ne
   var pathStr = calculateRotation(prevPercent || percent, outerRadius, width);
   var pathStr2 = calculateRotation(prevPercent2 || percent2, outerRadius, width);
   needle.current.append("path").attr("d", pathStr).attr("fill", needleColor);
-  needle2.current.append("path2").attr("d", pathStr2).attr("fill", needle2Color); //Add a circle at the bottom of needle
+  needle2.current.append("path").attr("d", pathStr).attr("fill", needle2Color); //Add a circle at the bottom of needle
 
   needle.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needleRadius).attr("fill", needleBaseColor);
   needle2.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needle2Radius).attr("fill", needle2BaseColor);
@@ -297,12 +297,12 @@ var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, ne
       var currentPercent = (0, _d.interpolateNumber)(prevPercent2, percent2);
       return function (percentOfPercent) {
         var progress = currentPercent(percentOfPercent);
-        return container.current.select(".needle2 path2").attr("d", calculateRotation(progress, outerRadius, width));
+        return container.current.select(".needle2 path").attr("d", calculateRotation(progress, outerRadius, width));
       };
     });
   } else {
     container.current.select(".needle path").attr("d", calculateRotation(percent, outerRadius, width));
-    container.current.select(".needle2 path2").attr("d", calculateRotation(percent2, outerRadius, width));
+    container.current.select(".needle2 path").attr("d", calculateRotation(percent2, outerRadius, width));
   }
 };
 
