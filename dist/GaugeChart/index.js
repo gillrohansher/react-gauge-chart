@@ -214,12 +214,12 @@ var setArcData = function setArcData(props, nbArcsToDisplay, colorArray, arcData
 var renderChart = function renderChart(resize, prevProps, width, margin, padding, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData) {
   updateDimensions(props, container, margin, padding, width, height); //Set dimensions of svg element and translations
 
-  svg.current.attr("width", width.current + margin.current.left + margin.current.right).attr("height", height.current + margin.current.top + margin.current.bottom + 1000);
+  svg.current.attr("width", width.current + margin.current.left + margin.current.right).attr("height", height.current + margin.current.top + margin.current.bottom + 100);
   g.current.attr("transform", "translate(" + margin.current.left + ", " + margin.current.top + ")"); //Set the radius to lesser of width or height and remove the margins
   //Calculate the new radius
 
   calculateRadius(width, height, outerRadius, margin, g);
-  doughnut.current.attr("transform", "translate(" + outerRadius.current + ", " + outerRadius.current + ")"); //Setup the arc
+  doughnut.current.attr("transform", "translate(" + outerRadius.current + ", " + (outerRadius.current + 100) + ")"); //Setup the arc
 
   arcChart.current.outerRadius(outerRadius.current).innerRadius(outerRadius.current * (1 - props.arcWidth)).cornerRadius(props.cornerRadius).padAngle(props.arcPadding); //Remove the old stuff
 
@@ -234,8 +234,8 @@ var renderChart = function renderChart(resize, prevProps, width, margin, padding
   });
   drawNeedle(resize, prevProps, props, width, height, needle, needle2, container, outerRadius, g); //Translate the needle starting point to the middle of the arc
 
-  needle.current.attr("transform", "translate(" + outerRadius.current + ", " + outerRadius.current + ")");
-  needle2.current.attr("transform", "translate(" + outerRadius.current + ", " + outerRadius.current + ")");
+  needle.current.attr("transform", "translate(" + outerRadius.current + ", " + (outerRadius.current + 100) + ")");
+  needle2.current.attr("transform", "translate(" + outerRadius.current + ", " + (outerRadius.current + 100) + ")");
 }; //Depending on the number of levels in the chart
 //This function returns the same number of colors
 
