@@ -306,7 +306,8 @@ const renderChart = (
   updateDimensions(props, container, margin, padding, width, height);
   //Set dimensions of svg element and translations
   svg.current
-    .attr("width", width.current + margin.current.left + margin.current.right)
+    .attr("width", width.current + margin.current.left + margin.current.right
+    )
     .attr(
       "height",
       height.current + margin.current.top + margin.current.bottom + 40
@@ -324,7 +325,7 @@ const renderChart = (
   );
   //Setup the arc
   arcChart.current
-    .outerRadius(outerRadius.current)
+    .outerRadius(outerRadius.current + 20)
     .innerRadius(outerRadius.current * (1 - props.arcWidth))
     .cornerRadius(props.cornerRadius)
     .padAngle(props.arcPadding);
@@ -424,10 +425,10 @@ const drawNeedle = (
 
     console.log('pathStr: ', pathStr);
   var theta1 = percentToRad(percent)
-  var x1Needle1= centerPoint[0] - ((height.current - 15) * 0.73) * Math.cos(theta1)
-  var y1Needle1= centerPoint[1] - ((height.current - 15) * 0.73) * Math.sin(theta1)
-  var x2Needle1= centerPoint[0] - (height.current - 15) * Math.cos(theta1)
-  var y2Needle1= centerPoint[1] - (height.current - 15) * Math.sin(theta1)
+  var x1Needle1= centerPoint[0] - ((height.current + 15) * 0.55) * Math.cos(theta1)
+  var y1Needle1= centerPoint[1] - ((height.current + 15) * 0.55) * Math.sin(theta1)
+  var x2Needle1= centerPoint[0] - (height.current + 15) * Math.cos(theta1)
+  var y2Needle1= centerPoint[1] - (height.current + 15) * Math.sin(theta1)
   needle.current
   .append('line')
   .attr('x1', x1Needle1)
@@ -462,10 +463,10 @@ const drawNeedle = (
   .attr("stroke-width", 10);
 
   var theta2 = percentToRad(percent2)
-  var x1Needle2= centerPoint[0]  - ((height.current - 15) * 0.73) * Math.cos(theta2)
-  var y1Needle2= centerPoint[1] - ((height.current - 15) * 0.73) * Math.sin(theta2)
-  var x2Needle2= centerPoint[0] - (height.current - 15) * Math.cos(theta2)
-  var y2Needle2= centerPoint[1] - (height.current - 15) * Math.sin(theta2)
+  var x1Needle2= centerPoint[0]  - ((height.current + 15) * 0.55) * Math.cos(theta2)
+  var y1Needle2= centerPoint[1] - ((height.current + 15) * 0.55) * Math.sin(theta2)
+  var x2Needle2= centerPoint[0] - (height.current + 15) * Math.cos(theta2)
+  var y2Needle2= centerPoint[1] - (height.current + 15) * Math.sin(theta2)
   needle2.current
   .append('line')
   .attr('x1', x1Needle2)

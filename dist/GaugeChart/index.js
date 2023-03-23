@@ -221,7 +221,7 @@ var renderChart = function renderChart(resize, prevProps, width, margin, padding
   calculateRadius(width, height, outerRadius, margin, g);
   doughnut.current.attr("transform", "translate(" + outerRadius.current + ", " + (outerRadius.current + 40) + ")"); //Setup the arc
 
-  arcChart.current.outerRadius(outerRadius.current).innerRadius(outerRadius.current * (1 - props.arcWidth)).cornerRadius(props.cornerRadius).padAngle(props.arcPadding); //Remove the old stuff
+  arcChart.current.outerRadius(outerRadius.current + 20).innerRadius(outerRadius.current * (1 - props.arcWidth)).cornerRadius(props.cornerRadius).padAngle(props.arcPadding); //Remove the old stuff
 
   doughnut.current.selectAll(".arc").remove();
   needle.current.selectAll("*").remove();
@@ -281,19 +281,19 @@ var drawNeedle = function drawNeedle(resize, prevProps, props, width, height, ne
   needle.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needleRadius).attr("fill", needleBaseColor).attr('stroke', 'white').attr("stroke-width", 4);
   console.log('pathStr: ', pathStr);
   var theta1 = percentToRad(percent);
-  var x1Needle1 = centerPoint[0] - (height.current - 15) * 0.73 * Math.cos(theta1);
-  var y1Needle1 = centerPoint[1] - (height.current - 15) * 0.73 * Math.sin(theta1);
-  var x2Needle1 = centerPoint[0] - (height.current - 15) * Math.cos(theta1);
-  var y2Needle1 = centerPoint[1] - (height.current - 15) * Math.sin(theta1);
+  var x1Needle1 = centerPoint[0] - (height.current + 15) * 0.55 * Math.cos(theta1);
+  var y1Needle1 = centerPoint[1] - (height.current + 15) * 0.55 * Math.sin(theta1);
+  var x2Needle1 = centerPoint[0] - (height.current + 15) * Math.cos(theta1);
+  var y2Needle1 = centerPoint[1] - (height.current + 15) * Math.sin(theta1);
   needle.current.append('line').attr('x1', x1Needle1).attr('y1', y1Needle1).attr('x2', x2Needle1).attr('y2', y2Needle1).attr('stroke', needleColor).style("stroke-dasharray", "3, 3");
   needle.current.append('circle').attr('cx', x2Needle1).attr('cy', y2Needle1).attr('r', 10).attr('stroke', 'black').attr("stroke-width", 0.3).attr("stroke-opacity", 0.5).attr('fill', 'white');
   needle.current.append('circle').attr('cx', x2Needle1).attr('cy', y2Needle1).attr('r', 6).attr('fill', '#DADAFF');
   needle2.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needle2Radius).attr("fill", needle2BaseColor).attr('stroke', '#000000').attr("stroke-width", 10);
   var theta2 = percentToRad(percent2);
-  var x1Needle2 = centerPoint[0] - (height.current - 15) * 0.73 * Math.cos(theta2);
-  var y1Needle2 = centerPoint[1] - (height.current - 15) * 0.73 * Math.sin(theta2);
-  var x2Needle2 = centerPoint[0] - (height.current - 15) * Math.cos(theta2);
-  var y2Needle2 = centerPoint[1] - (height.current - 15) * Math.sin(theta2);
+  var x1Needle2 = centerPoint[0] - (height.current + 15) * 0.55 * Math.cos(theta2);
+  var y1Needle2 = centerPoint[1] - (height.current + 15) * 0.55 * Math.sin(theta2);
+  var x2Needle2 = centerPoint[0] - (height.current + 15) * Math.cos(theta2);
+  var y2Needle2 = centerPoint[1] - (height.current + 15) * Math.sin(theta2);
   needle2.current.append('line').attr('x1', x1Needle2).attr('y1', y1Needle2).attr('x2', x2Needle2).attr('y2', y2Needle2).attr('stroke', needle2Color).style("stroke-dasharray", "3, 3");
   needle2.current.append('circle').attr('cx', x2Needle2).attr('cy', y2Needle2).attr('r', 10).attr('stroke', 'black').attr("stroke-width", 0.3).attr("stroke-opacity", 0.5).attr('fill', 'white');
   needle2.current.append('circle').attr('cx', x2Needle2).attr('cy', y2Needle2).attr('r', 6).attr('fill', '#5353FE');

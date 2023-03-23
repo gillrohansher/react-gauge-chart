@@ -41,7 +41,7 @@ const App = () => {
             <GaugeChart
 							id="gauge-chart1" 
               nrOfLevels={1000} 
-              arcPadding={0} 
+              arcPadding={0}
               cornerRadius={0} 
               colors={["#059266", "#BF941A", "#FF9500", "#FC8309", "#E8193C"]} 
               percent={0.5} 
