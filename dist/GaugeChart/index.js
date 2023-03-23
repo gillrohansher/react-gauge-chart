@@ -214,7 +214,7 @@ var setArcData = function setArcData(props, nbArcsToDisplay, colorArray, arcData
 var renderChart = function renderChart(resize, prevProps, width, margin, padding, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData) {
   updateDimensions(props, container, margin, padding, width, height); //Set dimensions of svg element and translations
 
-  svg.current.attr("width", width.current + margin.current.left + margin.current.right).attr("height", height.current + margin.current.top + margin.current.bottom);
+  svg.current.attr("width", width.current + margin.current.left + margin.current.right).attr("height", height.current + margin.current.top + margin.current.bottom + 1000);
   g.current.attr("transform", "translate(" + margin.current.left + ", " + margin.current.top + ")"); //Set the radius to lesser of width or height and remove the margins
   //Calculate the new radius
 

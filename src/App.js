@@ -44,7 +44,7 @@ const App = () => {
               arcPadding={0} 
               cornerRadius={0} 
               colors={["#059266", "#BF941A", "#FF9500", "#FC8309", "#E8193C"]} 
-              percent={0.3} 
+              percent={0.4} 
               percent2={0.75} 
               needleColor={'#727293'}
               needleBaseColor={'#D9D9D9'}

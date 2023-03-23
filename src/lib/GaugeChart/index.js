@@ -309,7 +309,7 @@ const renderChart = (
     .attr("width", width.current + margin.current.left + margin.current.right)
     .attr(
       "height",
-      height.current + margin.current.top + margin.current.bottom
+      height.current + margin.current.top + margin.current.bottom + 100
     )
   g.current.attr(
     "transform",
@@ -320,7 +320,7 @@ const renderChart = (
   calculateRadius(width, height, outerRadius, margin, g);
   doughnut.current.attr(
     "transform",
-    "translate(" + outerRadius.current + ", " + outerRadius.current + ")"
+    "translate(" + outerRadius.current + ", " + (outerRadius.current + 100) + ")"
   );
   //Setup the arc
   arcChart.current
@@ -362,11 +362,11 @@ const renderChart = (
   //Translate the needle starting point to the middle of the arc
   needle.current.attr(
     "transform",
-    "translate(" + outerRadius.current + ", " + outerRadius.current + ")"
+    "translate(" + outerRadius.current + ", " + (outerRadius.current + 100) + ")"
   );
   needle2.current.attr(
     "transform",
-    "translate(" + outerRadius.current + ", " + outerRadius.current + ")"
+    "translate(" + outerRadius.current + ", " + (outerRadius.current + 100) + ")"
   );
 };
 
