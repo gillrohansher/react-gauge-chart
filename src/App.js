@@ -51,7 +51,7 @@ const App = () => {
               needle2Color={'#000000'}
               needle2BaseColor={'#D9D9D9'}
               hideText={true}
-              style={{height: '140px'}}
+              style={{height: '175px'}}
 						/>
           </Col>
         </Row>

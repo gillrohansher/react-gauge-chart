@@ -424,10 +424,10 @@ const drawNeedle = (
 
     console.log('pathStr: ', pathStr);
   var theta1 = percentToRad(percent)
-  var x1Needle1= centerPoint[0] - (height.current * 0.73) * Math.cos(theta1)
-  var y1Needle1= centerPoint[1] - (height.current * 0.73) * Math.sin(theta1)
-  var x2Needle1= centerPoint[0] - height.current * Math.cos(theta1)
-  var y2Needle1= centerPoint[1] - height.current * Math.sin(theta1)
+  var x1Needle1= centerPoint[0] - ((height.current - 15) * 0.73) * Math.cos(theta1)
+  var y1Needle1= centerPoint[1] - ((height.current - 15) * 0.73) * Math.sin(theta1)
+  var x2Needle1= centerPoint[0] - (height.current - 15) * Math.cos(theta1)
+  var y2Needle1= centerPoint[1] - (height.current - 15) * Math.sin(theta1)
   needle.current
   .append('line')
   .attr('x1', x1Needle1)
@@ -462,10 +462,10 @@ const drawNeedle = (
   .attr("stroke-width", 10);
 
   var theta2 = percentToRad(percent2)
-  var x1Needle2= centerPoint[0] - (height.current * 0.73) * Math.cos(theta2)
-  var y1Needle2= centerPoint[1] - (height.current * 0.73) * Math.sin(theta2)
-  var x2Needle2= centerPoint[0] - height.current * Math.cos(theta2)
-  var y2Needle2= centerPoint[1] - height.current * Math.sin(theta2)
+  var x1Needle2= centerPoint[0]  - ((height.current - 15) * 0.73) * Math.cos(theta2)
+  var y1Needle2= centerPoint[1] - ((height.current - 15) * 0.73) * Math.sin(theta2)
+  var x2Needle2= centerPoint[0] - (height.current - 15) * Math.cos(theta2)
+  var y2Needle2= centerPoint[1] - (height.current - 15) * Math.sin(theta2)
   needle2.current
   .append('line')
   .attr('x1', x1Needle2)
