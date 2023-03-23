@@ -49,6 +49,7 @@ var GaugeChart = function GaugeChart(props) {
   var outerRadius = (0, _react.useRef)({});
   var margin = (0, _react.useRef)({}); // = {top: 20, right: 50, bottom: 50, left: 50},
 
+  var padding = (0, _react.useRef)({});
   var container = (0, _react.useRef)({});
   var nbArcsToDisplay = (0, _react.useRef)(0);
   var colorArray = (0, _react.useRef)([]);
@@ -62,12 +63,13 @@ var GaugeChart = function GaugeChart(props) {
     var prevProps = arguments.length > 2 ? arguments[2] : undefined;
 
     if (update) {
-      renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData);
+      renderChart(resize, prevProps, width, margin, padding, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData);
       return;
     }
 
     container.current.select("svg").remove();
     svg.current = container.current.append("svg");
+    container.current.attr('fill', 'red');
     g.current = svg.current.append("g"); //Used for margins
 
     doughnut.current = g.current.append("g").attr("class", "doughnut"); //Set up the pie generator
@@ -80,7 +82,7 @@ var GaugeChart = function GaugeChart(props) {
 
     needle.current = g.current.append("g").attr("class", "needle");
     needle2.current = g.current.append("g").attr("class", "needle2");
-    renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData);
+    renderChart(resize, prevProps, width, margin, padding, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData);
   }, [props]);
   (0, _react.useLayoutEffect)(function () {
     setArcData(props, nbArcsToDisplay, colorArray, arcData);
@@ -108,7 +110,7 @@ var GaugeChart = function GaugeChart(props) {
   (0, _react.useEffect)(function () {
     var handleResize = function handleResize() {
       var resize = true;
-      renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData);
+      renderChart(resize, prevProps, width, margin, padding, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData);
     }; //Set up resize event listener to re-render the chart everytime the window is resized
 
 
@@ -209,8 +211,8 @@ var setArcData = function setArcData(props, nbArcsToDisplay, colorArray, arcData
 }; //Renders the chart, should be called every time the window is resized
 
 
-var renderChart = function renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData) {
-  updateDimensions(props, container, margin, width, height); //Set dimensions of svg element and translations
+var renderChart = function renderChart(resize, prevProps, width, margin, padding, height, outerRadius, g, doughnut, arcChart, needle, needle2, pieChart, svg, props, container, arcData) {
+  updateDimensions(props, container, margin, padding, width, height); //Set dimensions of svg element and translations
 
   svg.current.attr("width", width.current + margin.current.left + margin.current.right).attr("height", height.current + margin.current.top + margin.current.bottom);
   g.current.attr("transform", "translate(" + margin.current.left + ", " + margin.current.top + ")"); //Set the radius to lesser of width or height and remove the margins
@@ -230,7 +232,7 @@ var renderChart = function renderChart(resize, prevProps, width, margin, height,
   arcPaths.append("path").attr("d", arcChart.current).style("fill", function (d) {
     return d.data.color;
   });
-  drawNeedle(resize, prevProps, props, width, needle, needle2, container, outerRadius, g); //Translate the needle starting point to the middle of the arc
+  drawNeedle(resize, prevProps, props, width, height, needle, needle2, container, outerRadius, g); //Translate the needle starting point to the middle of the arc
 
   needle.current.attr("transform", "translate(" + outerRadius.current + ", " + outerRadius.current + ")");
   needle2.current.attr("transform", "translate(" + outerRadius.current + ", " + outerRadius.current + ")");
@@ -252,7 +254,7 @@ var getColors = function getColors(props, nbArcsToDisplay) {
 }; //If 'resize' is true then the animation does not play
 
 
-var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, needle2, container, outerRadius, g) {
+var drawNeedle = function drawNeedle(resize, prevProps, props, width, height, needle, needle2, container, outerRadius, g) {
   var percent = props.percent,
       percent2 = props.percent2,
       needleColor = props.needleColor,
@@ -276,8 +278,25 @@ var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, ne
   needle.current.append("path").attr("d", pathStr).attr("fill", needleColor);
   needle2.current.append("path").attr("d", pathStr2).attr("fill", needle2Color); //Add a circle at the bottom of needle
 
-  needle.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needleRadius).attr("fill", needleBaseColor);
-  needle2.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needle2Radius).attr("fill", needle2BaseColor);
+  needle.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needleRadius).attr("fill", needleBaseColor).attr('stroke', 'white').attr("stroke-width", 4);
+  console.log('pathStr: ', pathStr);
+  var theta1 = percentToRad(percent);
+  var x1Needle1 = centerPoint[0] - height.current * 0.73 * Math.cos(theta1);
+  var y1Needle1 = centerPoint[1] - height.current * 0.73 * Math.sin(theta1);
+  var x2Needle1 = centerPoint[0] - height.current * Math.cos(theta1);
+  var y2Needle1 = centerPoint[1] - height.current * Math.sin(theta1);
+  needle.current.append('line').attr('x1', x1Needle1).attr('y1', y1Needle1).attr('x2', x2Needle1).attr('y2', y2Needle1).attr('stroke', needleColor).style("stroke-dasharray", "3, 3");
+  needle.current.append('circle').attr('cx', x2Needle1).attr('cy', y2Needle1).attr('r', 10).attr('stroke', 'black').attr("stroke-width", 0.3).attr("stroke-opacity", 0.5).attr('fill', 'white');
+  needle.current.append('circle').attr('cx', x2Needle1).attr('cy', y2Needle1).attr('r', 6).attr('fill', '#DADAFF');
+  needle2.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needle2Radius).attr("fill", needle2BaseColor).attr('stroke', '#000000').attr("stroke-width", 10);
+  var theta2 = percentToRad(percent2);
+  var x1Needle2 = centerPoint[0] - height.current * 0.73 * Math.cos(theta2);
+  var y1Needle2 = centerPoint[1] - height.current * 0.73 * Math.sin(theta2);
+  var x2Needle2 = centerPoint[0] - height.current * Math.cos(theta2);
+  var y2Needle2 = centerPoint[1] - height.current * Math.sin(theta2);
+  needle2.current.append('line').attr('x1', x1Needle2).attr('y1', y1Needle2).attr('x2', x2Needle2).attr('y2', y2Needle2).attr('stroke', needle2Color).style("stroke-dasharray", "3, 3");
+  needle2.current.append('circle').attr('cx', x2Needle2).attr('cy', y2Needle2).attr('r', 10).attr('stroke', 'black').attr("stroke-width", 0.3).attr("stroke-opacity", 0.5).attr('fill', 'white');
+  needle2.current.append('circle').attr('cx', x2Needle2).attr('cy', y2Needle2).attr('r', 6).attr('fill', '#5353FE');
 
   if (!hideText) {
     addText(percent, props, outerRadius, width, g);
@@ -364,7 +383,7 @@ var centerGraph = function centerGraph(width, g, outerRadius, margin) {
   g.current.attr("transform", "translate(" + margin.current.left + ", " + margin.current.top + ")");
 };
 
-var updateDimensions = function updateDimensions(props, container, margin, width, height) {
+var updateDimensions = function updateDimensions(props, container, margin, padding, width, height) {
   //TODO: Fix so that the container is included in the component
   var marginInPercent = props.marginInPercent;
   var divDimensions = container.current.node().getBoundingClientRect(),

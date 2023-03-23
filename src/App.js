@@ -7,16 +7,16 @@ const App = () => {
   const [currentPercent, setCurrentPercent] = useState();
   const [arcs, setArcs] = useState([0.5, 0.3, 0.2])
 
-	useEffect(() => {
-		const timer = setTimeout(() => {
-      setCurrentPercent(Math.random());
-      setArcs([0.1, 0.5, 0.4])
-		}, 3000);
+	// useEffect(() => {
+	// 	const timer = setTimeout(() => {
+  //     setCurrentPercent(Math.random());
+  //     setArcs([0.1, 0.5, 0.4])
+	// 	}, 3000);
 
-		return () => {
-			clearTimeout(timer);
-		};
-	});
+	// 	return () => {
+	// 		clearTimeout(timer);
+	// 	};
+	// });
 
 	const chartStyle = {
 		height: 250,
@@ -31,23 +31,31 @@ const App = () => {
           </Col>
         </Row>
         <Row>
-          <Col xs={12} lg={6}>
+          {/* <Col xs={12} lg={6}>
             <h6>GaugeChart with default props</h6>
-            <GaugeChart style={chartStyle} />
-          </Col>
-          <Col xs={12} lg={6}>
+            <GaugeChart percent={0.3} 
+              percent2={0.65}  style={chartStyle} />
+          </Col> */}
+          <Col xs={12} lg={12}>
             <h6>GaugeChart with 20 levels</h6>
             <GaugeChart
-							style={chartStyle}
-							nrOfLevels={20}
-							percent={0.86}
-              percent2={0.35}
-              needleColor="#345243"
-              fontSize="12px"
+							id="gauge-chart1" 
+              nrOfLevels={1000} 
+              arcPadding={0} 
+              cornerRadius={0} 
+              colors={["#059266", "#BF941A", "#FF9500", "#FC8309", "#E8193C"]} 
+              percent={0.3} 
+              percent2={0.75} 
+              needleColor={'#727293'}
+              needleBaseColor={'#D9D9D9'}
+              needle2Color={'#000000'}
+              needle2BaseColor={'#D9D9D9'}
+              hideText={true}
+              style={{height: '140px'}}
 						/>
           </Col>
         </Row>
-        <Row>
+        {/* <Row>
           <Col xs={12} lg={6}>
             <h6>GaugeChart with custom colors</h6>
             <GaugeChart
@@ -131,7 +139,7 @@ const App = () => {
               arcPadding={0.02}
             />
           </Col>
-        </Row>          
+        </Row>           */}
       </Container>
     </>
   )

@@ -48,6 +48,7 @@ const GaugeChart = (props) => {
   const needle2 = useRef({});
   const outerRadius = useRef({});
   const margin = useRef({}); // = {top: 20, right: 50, bottom: 50, left: 50},
+  const padding = useRef({});
   const container = useRef({});
   const nbArcsToDisplay = useRef(0);
   const colorArray = useRef([]);
@@ -65,6 +66,7 @@ const GaugeChart = (props) => {
           prevProps,
           width,
           margin,
+          padding,
           height,
           outerRadius,
           g,
@@ -83,6 +85,7 @@ const GaugeChart = (props) => {
 
       container.current.select("svg").remove();
       svg.current = container.current.append("svg");
+      container.current.attr('fill', 'red')
       g.current = svg.current.append("g"); //Used for margins
       doughnut.current = g.current.append("g").attr("class", "doughnut");
 
@@ -105,6 +108,7 @@ const GaugeChart = (props) => {
         prevProps,
         width,
         margin,
+        padding,
         height,
         outerRadius,
         g,
@@ -165,6 +169,7 @@ const GaugeChart = (props) => {
         prevProps,
         width,
         margin,
+        padding,
         height,
         outerRadius,
         g,
@@ -284,6 +289,7 @@ const renderChart = (
   prevProps,
   width,
   margin,
+  padding,
   height,
   outerRadius,
   g,
@@ -297,14 +303,14 @@ const renderChart = (
   container,
   arcData
 ) => {
-  updateDimensions(props, container, margin, width, height);
+  updateDimensions(props, container, margin, padding, width, height);
   //Set dimensions of svg element and translations
   svg.current
     .attr("width", width.current + margin.current.left + margin.current.right)
     .attr(
       "height",
       height.current + margin.current.top + margin.current.bottom
-    );
+    )
   g.current.attr(
     "transform",
     "translate(" + margin.current.left + ", " + margin.current.top + ")"
@@ -346,6 +352,7 @@ const renderChart = (
     prevProps,
     props,
     width,
+    height,
     needle,
     needle2,
     container,
@@ -384,6 +391,7 @@ const drawNeedle = (
   prevProps,
   props,
   width,
+  height,
   needle,
   needle2,
   container,
@@ -410,13 +418,77 @@ const drawNeedle = (
     .attr("cx", centerPoint[0])
     .attr("cy", centerPoint[1])
     .attr("r", needleRadius)
-    .attr("fill", needleBaseColor);
+    .attr("fill", needleBaseColor)
+    .attr('stroke', 'white')
+    .attr("stroke-width", 4);
+
+    console.log('pathStr: ', pathStr);
+  var theta1 = percentToRad(percent)
+  var x1Needle1= centerPoint[0] - (height.current * 0.73) * Math.cos(theta1)
+  var y1Needle1= centerPoint[1] - (height.current * 0.73) * Math.sin(theta1)
+  var x2Needle1= centerPoint[0] - height.current * Math.cos(theta1)
+  var y2Needle1= centerPoint[1] - height.current * Math.sin(theta1)
+  needle.current
+  .append('line')
+  .attr('x1', x1Needle1)
+  .attr('y1', y1Needle1)
+  .attr('x2', x2Needle1)
+  .attr('y2', y2Needle1)
+  .attr('stroke', needleColor)
+  .style("stroke-dasharray", ("3, 3"));
+
+  needle.current.append('circle')
+  .attr('cx', x2Needle1)
+  .attr('cy', y2Needle1)
+  .attr('r', 10)
+  .attr('stroke', 'black')
+  .attr("stroke-width", 0.3)
+  .attr("stroke-opacity", 0.5)
+  .attr('fill', 'white');
+
+  needle.current.append('circle')
+  .attr('cx', x2Needle1)
+  .attr('cy', y2Needle1)
+  .attr('r', 6)
+  .attr('fill', '#DADAFF');
+
   needle2.current
   .append("circle")
   .attr("cx", centerPoint[0])
   .attr("cy", centerPoint[1])
   .attr("r", needle2Radius)
-  .attr("fill", needle2BaseColor);
+  .attr("fill", needle2BaseColor)
+  .attr('stroke', '#000000')
+  .attr("stroke-width", 10);
+
+  var theta2 = percentToRad(percent2)
+  var x1Needle2= centerPoint[0] - (height.current * 0.73) * Math.cos(theta2)
+  var y1Needle2= centerPoint[1] - (height.current * 0.73) * Math.sin(theta2)
+  var x2Needle2= centerPoint[0] - height.current * Math.cos(theta2)
+  var y2Needle2= centerPoint[1] - height.current * Math.sin(theta2)
+  needle2.current
+  .append('line')
+  .attr('x1', x1Needle2)
+  .attr('y1', y1Needle2)
+  .attr('x2', x2Needle2)
+  .attr('y2', y2Needle2)
+  .attr('stroke', needle2Color)
+  .style("stroke-dasharray", ("3, 3"));
+
+  needle2.current.append('circle')
+  .attr('cx', x2Needle2)
+  .attr('cy', y2Needle2)
+  .attr('r', 10)
+  .attr('stroke', 'black')
+  .attr("stroke-width", 0.3)
+  .attr("stroke-opacity", 0.5)
+  .attr('fill', 'white');
+
+  needle2.current.append('circle')
+  .attr('cx', x2Needle2)
+  .attr('cy', y2Needle2)
+  .attr('r', 6)
+  .attr('fill', '#5353FE');
   if (!hideText) {
     addText(percent, props, outerRadius, width, g);
     addText(percent2, props, outerRadius, width, g);
@@ -548,7 +620,7 @@ const centerGraph = (width, g, outerRadius, margin) => {
   );
 };
 
-const updateDimensions = (props, container, margin, width, height) => {
+const updateDimensions = (props, container, margin, padding, width, height) => {
   //TODO: Fix so that the container is included in the component
   const { marginInPercent } = props;
   var divDimensions = container.current.node().getBoundingClientRect(),
